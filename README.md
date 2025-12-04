@@ -40,4 +40,88 @@ This work demonstrates my ability to handle complex data pipelines — from sign
 ---
 
 ## 🧩 Repository Structure
+Cardiac-MRI-nnUNet-Preparation/
+│
+├── MATLAB/
+│ ├── convert_mat_to_nifti.m # Extracts and converts .mat to NIfTI
+│ ├── stack_slices_to_3D.m # Stacks 2D slices into 3D volumes
+│ ├── stack_labels_to_3D.m # Creates 3D label masks
+│ ├── consistency_check.m # Checks shape, modality, and label alignment
+│
+├── dataset_setup/
+│ └── make_dataset_json.py # Generates nnU-Net dataset.json automatically
+│
+├── notes/
+│ └── data_structure_explained.md # Documentation of data hierarchy and mapping
+│
+├── README.md
+└── .gitignore
 
+
+
+
+
+---
+
+## 🧰 Technologies and Skills Demonstrated
+
+- **MATLAB (Advanced):**  
+  Structured data handling, volumetric reconstruction, and automated file generation  
+  (includes scripting for multi-phase cardiac MRI).
+
+- **Medical Image Processing:**  
+  Multi-modal data normalization, 3D stack synthesis, and label integrity checking.
+
+- **Python (Intermediate):**  
+  Dataset configuration automation for nnU-Net (`dataset.json` generation).
+
+- **Deep Learning Data Management:**  
+  Understanding and implementing nnU-Net dataset standards for multi-channel inputs.
+
+- **Cross-platform Workflow:**  
+  MATLAB (Windows) → Linux/WSL (Python + nnU-Net).
+
+---
+
+## 🧠 Example Workflow
+
+1. Convert `.mat` → `.nii`:
+   ```matlab
+   convert_mat_to_nifti.m
+
+
+Stack slices → 3D:
+stack_slices_to_3D.m
+
+stack_labels_to_3D.m
+
+Verify dataset:
+consistency_check.m
+
+ Resulting Dataset Structure
+
+ Dataset501_MVD/
+├── imagesTr/
+│   ├── subj001_phase01_0000.nii.gz  # Modality 1 (Magnitude)
+│   ├── subj001_phase01_0001.nii.gz  # Modality 2 (T2* Map)
+│   └── ...
+├── labelsTr/
+│   ├── subj001_phase01.nii.gz
+│   └── ...
+└── dataset.json
+
+
+📊 Demonstrated Abilities
+**3D medical image reconstruction from multi-dimensional MATLAB matrices
+Automated multimodal dataset generation for segmentation models
+Data validation and sanity checks
+Building reproducible, research-grade data preparation pipelines**
+
+
+
+
+👩‍💻 Author
+
+A. Guha
+Biomedical Engineering | Cedars-Sinai Health System
+MRI Data Processing • Deep Learning • Image Segmentation • Automation
