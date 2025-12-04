@@ -1,0 +1,48 @@
+clc; clear; close all;
+%  Folder paths 
+labelDir = 'C:\Users\guhaa2\OneDrive - Cedars-Sinai Health System\Malagi, Archana''s files - MVD project with AG\nnUNet_prepared_data\labelsTr';
+outLblDir = 'C:\Users\guhaa2\OneDrive - Cedars-Sinai Health System\Malagi, Archana''s files - MVD project with AG\nnUNet_prepared_data\stacked_labelsTr';
+if ~exist(outLblDir, 'dir'); mkdir(outLblDir); end
+%  Find all label files 
+labelFiles = dir(fullfile(labelDir, 'subj*_phase*_slice*.nii'));
+fprintf('Found %d label slices.\n', numel(labelFiles));
+
+if isempty(labelFiles)
+    error('No .nii label files found. Check if they are still compressed (.nii.gz).');
+end
+%  Extract subject-phase groups
+allNames = {labelFiles.name};
+tokens = regexp(allNames, '^(subj\d+_phase\d+)_slice\d+', 'tokens', 'once');
+groups = unique(cellfun(@(x) x{1}, tokens(~cellfun('isempty', tokens)), 'UniformOutput', false));
+fprintf('Found %d subject-phase groups.\n', numel(groups));
+%  Loop through each subject-phase 
+for g = 1:numel(groups)
+    thisGroup = groups{g};
+    fprintf('Processing %s ...\n', thisGroup);
+
+    % Get all slices for this group
+    thisGroupFiles = labelFiles(contains({labelFiles.name}, thisGroup));
+    [~, sortIdx] = sort({thisGroupFiles.name});
+    thisGroupFiles = thisGroupFiles(sortIdx);
+
+    % Read and stack slices
+    for s = 1:numel(thisGroupFiles)
+        sliceData(:,:,s) = niftiread(fullfile(labelDir, thisGroupFiles(s).name));
+    end
+
+    % Copy header info from the first slice
+    info = niftiinfo(fullfile(labelDir, thisGroupFiles(1).name));
+
+    % Adjust header for 3D
+    info.ImageSize = size(sliceData);
+    info.PixelDimensions = [info.PixelDimensions(1:2) 1];
+
+    % Save stacked file
+    outFile = sprintf('%s_3Dlabel.nii', thisGroup);
+    niftiwrite(sliceData, fullfile(outLblDir, outFile), info);
+
+    fprintf('   Saved %s\n', outFile);
+
+    clear sliceData;
+end
+fprintf('\n All label slices stacked successfully into %s\n', outLblDir);
